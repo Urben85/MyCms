@@ -1,1 +1,131 @@
-Deployment Code works
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>myCMS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/admin.css">
+        <script type="text/javascript" src="admin.js"></script>
+    </head>
+    <body class="w3-black">
+        <!-- Navbar -->
+        <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+            <img src="images/logo.png" style="width:100%">
+            <a id="UPDATES" class="w3-bar-item w3-button w3-padding-large w3-black">
+                <i class="fas fa-marker w3-xxlarge"></i>
+                <p>UPDATES</p>
+            </a>
+            <a id="MODELS" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+                <i class="fas fa-users w3-xxlarge"></i>
+                <p>MODELS</p>
+            </a>
+            <a id="SETTINGS" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+                <i class="fas fa-sliders-h w3-xxlarge"></i>
+                <p>SETTINGS</p>
+            </a>
+        </nav>
+        <!-- Navbar on small screens (Hidden on medium and large screens) -->
+        <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+            <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+                <a id="UPDATES" class="w3-bar-item w3-button" style="width:25% !important">UPDATES</a>
+                <a id="MODELS" class="w3-bar-item w3-button" style="width:25% !important">MODELS</a>
+                <a id="SETTINGS" class="w3-bar-item w3-button" style="width:25% !important">SETTINGS</a>
+            </div>
+        </div>
+        <!-- End Navbar -->
+
+        <!-- Page Content -->
+        <div class="w3-padding-large" id="main">
+
+            <!-- UPDATES Area -->
+            <div id="UPDATES" class="w3-content w3-justify w3-text-grey w3-padding-64">
+                <h2>UPDATES</h2>
+            </div>
+            <!-- End UPDATES AREA -->
+
+            <!-- Header/Home
+            <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+                <h1 class="w3-jumbo"><span class="w3-hide-small">I'm</span> John Doe.</h1>
+                <p>Photographer and Web Designer.</p>
+                <img src="/w3images/man_smoke.jpg" alt="boy" class="w3-image" width="992" height="1108">
+            </header>-->
+
+            <!-- About Section
+            <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+                <h2 class="w3-text-light-grey">My Name</h2>
+                <hr style="width:200px" class="w3-opacity">
+                <p>Some text about me. Some text about me. I am lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <p class="w3-wide">Photoshop</p>
+                <div class="w3-white">
+                <div class="w3-dark-grey" style="height:28px;width:80%"></div>
+                </div><br>
+
+                <button class="w3-button w3-light-grey w3-padding-large w3-section">
+                <i class="fa fa-download"></i> Download Resume
+                </button>
+            </div>
+            End About Section -->
+            
+            <!-- Portfolio Section
+            <div class="w3-padding-64 w3-content" id="photos">
+                <h2 class="w3-text-light-grey">My Photos</h2>
+                <hr style="width:200px" class="w3-opacity">
+                <div class="w3-row-padding" style="margin:0 -16px">
+                <div class="w3-half">
+                    <img src="/w3images/wedding.jpg" style="width:100%">
+                    <img src="/w3images/rocks.jpg" style="width:100%">
+                    <img src="/w3images/sailboat.jpg" style="width:100%">
+                </div>
+                <div class="w3-half">
+                    <img src="/w3images/underwater.jpg" style="width:100%">
+                    <img src="/w3images/chef.jpg" style="width:100%">
+                    <img src="/w3images/wedding.jpg" style="width:100%">
+                    <img src="/w3images/p6.jpg" style="width:100%">
+                </div>
+                </div>
+            </div>
+                End Portfolio Section -->
+
+            <!-- Contact Section
+            <div class="w3-padding-64 w3-content w3-text-grey" id="contact">
+                <h2 class="w3-text-light-grey">Contact Me</h2>
+                <hr style="width:200px" class="w3-opacity">
+
+                <div class="w3-section">
+                <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Chicago, US</p>
+                <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Phone: +00 151515</p>
+                <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: mail@mail.com</p>
+                </div><br>
+                <p>Lets get in touch. Send me a message:</p>
+
+                <form action="/action_page.php" target="_blank">
+                <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
+                <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
+                <p><input class="w3-input w3-padding-16" type="text" placeholder="Subject" required name="Subject"></p>
+                <p><input class="w3-input w3-padding-16" type="text" placeholder="Message" required name="Message"></p>
+                <p>
+                    <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+                    <i class="fa fa-paper-plane"></i> SEND MESSAGE
+                    </button>
+                </p>
+                </form>
+            </div>
+            End Contact Section -->
+
+            <!-- Footer -->
+            <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+                <p class="w3-medium w3-right">myCMS Version 1.0.0</p>
+            </footer>
+            <!-- End footer -->
+
+        </div>
+        <!-- END PAGE CONTENT -->
+
+    </body>
+</html>
