@@ -21,11 +21,11 @@ function deployCSS(cb) {
     ftpUpload('dist/css/*',remotePath(param.app) + '/css',cb);
 }
 
-function deployJS() {
+function deployJS(cb) {
     ftpUpload('dist/*.js',remotePath(param.app),cb);
 }
 
-function deployPHP() {
+function deployPHP(cb) {
     ftpUpload('dist/php/**/*.php',remotePath(param.app) + '/php',cb);
 }
 
@@ -42,13 +42,14 @@ function build() {
 }
 
 function compressJS(cb) {
-    pump([
-        src('dist/*.js'),
-        uglify(),
-        dest('dist')
-    ],
-    cb
-  );
+    pump(
+        [
+            src('dist/*.js'),
+            uglify(),
+            dest('dist')
+        ],
+        cb
+    );
 }
 
 function clear() {
