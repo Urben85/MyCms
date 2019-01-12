@@ -6,6 +6,10 @@ h1,h2,h3,h4,h5,h6 {
     color: #1BA1E2;
 }
 
+.w3-content {
+    display: none;
+}
+
 .w3-row-padding img {
     margin-bottom: 12px
 }
@@ -23,4 +27,22 @@ h1,h2,h3,h4,h5,h6 {
     #main {
         margin-left: 0
     }
+}
+
+.myTextArea {
+    resize: none;
+}
+
+.myCheckbox {
+    width: 25px;
+    height: 25px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.myButton {
+    width: 100%;
 }
