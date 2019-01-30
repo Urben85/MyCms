@@ -6,6 +6,12 @@ h1,h2,h3,h4,h5,h6 {
     color: #1BA1E2;
 }
 
+@media only screen and (max-width: 600px) {
+    #main {
+        margin-left: 0
+    }
+}
+
 .w3-content {
     display: none;
 }
@@ -13,20 +19,39 @@ h1,h2,h3,h4,h5,h6 {
 .w3-row-padding img {
     margin-bottom: 12px
 }
-/* Set the width of the sidebar to 120px */
+
 .w3-sidebar {
     width: 120px;
     background: #1BA1E2;
 }
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+
+.Required {
+    color: red;
+}
+
 #main {
     margin-left: 120px
 }
-/* Remove margins from "page content" on small screens */
-@media only screen and (max-width: 600px) {
-    #main {
-        margin-left: 0
-    }
+
+#Loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+}
+
+#Loading i {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    color: #1BA1E2;
 }
 
 .myTextArea {
@@ -45,4 +70,66 @@ h1,h2,h3,h4,h5,h6 {
 
 .myButton {
     width: 100%;
+}
+
+.EditFormOnly {
+    display: none;
+}
+
+.UploadControl_DragDropArea {
+    width: 100%;
+    height: 100px;
+    line-height: 85px;
+    text-align: center;
+    float: left;
+    margin-bottom: 10px;
+    border: 3px dashed #FFF;
+    color: #FFF;
+}
+
+.UploadControl_ProgressBar[value] {
+    display: none;
+    width: 100%;
+    height: 25px;
+    margin-top: 5px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.UploadControl_ProgressBar[value]::-webkit-progress-bar {
+    background-color: #eee;
+  }
+
+.UploadControl_ProgressBar[value]::-webkit-progress-value {
+    background: #4CAF50;
+  }
+
+.UploadControl_Status {
+    display: none;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.UploadControl_Loading {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.UploadControl_FilesList {
+    display: none;
+    overflow: auto;
+    max-height: 100px;
+    list-style-type: none;
+    padding: 10px;
+}
+
+.UploadControl_FilesList a {
+    color: #FFF;
+    text-decoration: none;
+}
+
+.UploadControl_DeleteFile {
+    cursor: pointer;
+    color: red;
+    float: right;
 }

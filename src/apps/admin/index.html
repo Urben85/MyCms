@@ -11,6 +11,10 @@
         <script type="text/javascript" src="admin.js"></script>
     </head>
     <body class="w3-black">
+        <!-- Loading -->
+        <div id="Loading"><i class="fas fa-circle-notch fa-spin" style="font-size:50px"></i></div>
+        <!-- End Loading -->
+
         <!-- Navigation -->
         <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
             <img src="images/logo.png" style="width:100%">
@@ -45,27 +49,27 @@
                 <h2>UPDATES</h2>
                 <div id="UPDATES_Webpart" class="w3-row">
                     <div class="w3-half w3-padding-large w3-left">
-                        <p>
+                        <div class="w3-section">
                             <h5>Title</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Title" required id="Title">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Description</h5>
                             <textarea class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="Description" required id="Description"></textarea>
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Publish Date</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Publish Date" required id="PublishDate">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Public</h5>
                             <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Public">
-                        </p>
-                        <p>
-                            <button class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
+                        </div>
+                        <div class="w3-section">
+                            <button id="UpdateSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
                             <i class="fas fa-save"></i> SAVE
                             </button>
-                        </p>
+                        </div>
                     </div>
                     <div class="w3-half w3-padding-large">
                         <p>List</p>
@@ -78,22 +82,26 @@
             <div id="MODELS_Area" class="w3-content w3-justify w3-text-grey w3-padding-64">
                 <h2>MODELS</h2>
                 <div id="MODELS_Webpart" class="w3-row">
-                    <div class="w3-half w3-padding-large">
-                        <p>
-                            <h5>Name</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Title" required id="Name">
-                        </p>
-                        <p>
-                            <h5>Description</h5>
-                            <textarea class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="Description" required id="Description"></textarea>
-                        </p>
-                        <p>
-                            <button class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
+                    <div id="MODEL_Form" class="w3-half w3-padding-large">
+                        <div class="w3-section">
+                            <h5>Name <span class="Required">*</span></h5>
+                            <input id="Model_Name" class="w3-input w3-padding-16" type="text" placeholder="Name">
+                        </div>
+                        <div class="w3-section">
+                            <h5>About</h5>
+                            <textarea id="Model_About" class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="About"></textarea>
+                        </div>
+                        <div class="w3-section EditFormOnly">
+                            <h5>Avatar</h5>
+                            <div type="Model_Avatar" class="UploadControl"></div>
+                        </div>
+                        <div class="w3-section">
+                            <button id="ModelSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
                             <i class="fas fa-save"></i> SAVE
                             </button>
-                        </p>
+                        </div>
                     </div>
-                    <div class="w3-half w3-padding-large">
+                    <div id="MODELS_View" class="w3-half w3-padding-large">
                         <p>List</p>
                     </div>
                 </div>
@@ -105,31 +113,31 @@
                 <h2>SETTINGS</h2>
                 <div id="SETTINGS_Webpart">
                     <div class="w3-padding-large">
-                        <p>
+                        <div class="w3-section">
                             <h5>Setting 1</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Setting 2</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Setting 3</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Setting 4</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </p>
-                        <p>
+                        </div>
+                        <div class="w3-section">
                             <h5>Setting 5</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </p>
-                        <p>
-                            <button class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
+                        </div>
+                        <div class="w3-section">
+                            <button id="SettingsSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
                             <i class="fas fa-save"></i> SAVE
                             </button>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
