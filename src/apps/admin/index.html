@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/jquery.dataTables.css">
         <link rel="stylesheet" href="css/admin.css">
         <script type="text/javascript" src="admin.js"></script>
     </head>
@@ -79,10 +80,15 @@
             <!-- End UPDATES AREA -->
 
             <!-- MODELS Area -->
-            <div id="MODELS_Area" class="w3-content w3-justify w3-text-grey w3-padding-64">
-                <h2>MODELS</h2>
+            <div id="MODELS_Area" class="w3-content w3-justify w3-padding-64">
+                <h2 id="MODEL_Area_Title"></h2>
                 <div id="MODELS_Webpart" class="w3-row">
-                    <div id="MODEL_Form" class="w3-half w3-padding-large">
+                    <div id="MODEL_Form" class="w3-half w3-padding-large" style="min-width: 400px">
+                        <div class="w3-section">
+                            <button id="ModelNewBtn" class="w3-button w3-green w3-padding-large w3-margin-top myButton EditFormOnly" type="submit">
+                                <i class="fas fa-plus-square"></i> NEW MODEL
+                            </button>
+                        </div>
                         <div class="w3-section">
                             <h5>Name <span class="Required">*</span></h5>
                             <input id="Model_Name" class="w3-input w3-padding-16" type="text" placeholder="Name">
@@ -91,19 +97,26 @@
                             <h5>About</h5>
                             <textarea id="Model_About" class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="About"></textarea>
                         </div>
-                        <div class="w3-section EditFormOnly">
+                        <div class="w3-section">
+                            <h5>Customs</h5>
+                            <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Customs">
+                        </div>
+                        <div class="w3-section w3-hide-small EditFormOnly">
                             <h5>Avatar</h5>
-                            <div type="Model_Avatar" class="UploadControl"></div>
+                            <div id="Model_Avatar" class="UploadControl"></div>
                         </div>
                         <div class="w3-section">
                             <button id="ModelSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
-                            <i class="fas fa-save"></i> SAVE
+                                <i class="fas fa-save"></i> SAVE
+                            </button>
+                        </div>
+                        <div class="w3-section">
+                            <button id="ModelDeleteBtn" class="w3-button w3-red w3-padding-large w3-margin-top myButton EditFormOnly" type="submit">
+                                <i class="far fa-trash-alt"></i> DELETE
                             </button>
                         </div>
                     </div>
-                    <div id="MODELS_View" class="w3-half w3-padding-large">
-                        <p>List</p>
-                    </div>
+                    <div id="MODELS_ListView" class="w3-half w3-padding-large ListView"></div>
                 </div>
             </div>
             <!-- End MODELS AREA -->

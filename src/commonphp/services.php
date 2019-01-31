@@ -1,5 +1,10 @@
 <?php 
 $config = include('config.php');
+$pdo = new PDO(
+    "mysql:host=".$config['host'].";dbname=".$config['DB_Name'], 
+    $config['DB_User'], 
+    $config['DB_Pw']
+);
 
 // POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['function']) && !empty($_POST['function']))
@@ -14,13 +19,16 @@ function PostEventHandler() {
     switch($function) {
         case 'CreateModel' : CreateModel();break;
         case 'UpdateModel' : UpdateModel();break;
+        case 'DeleteFile' : DeleteFile();break;
     }
 }
 function GetEventHandler() {
     $function = $_GET['function'];
-    //switch($function) {
-    //    case 'FunctionName' : FunctionName();break;
-    //}
+    switch($function) {
+        case 'GetModelByID' : GetModelByID();break;
+        case 'GetAllModels' : GetAllModels();break;
+        case 'GetFilesByPath' : GetFilesByPath();break;
+    }
 }
 #endregion Post-Get-Event-Handlers
 
@@ -39,16 +47,10 @@ function GetEventHandler() {
 
 #region Models
 function CreateModel() {
-    global $config;
+    global $config,$pdo;
     $model = json_decode($_POST['param1'],true);
 
     try {
-        $pdo = new PDO(
-            "mysql:host=".$config['host'].";dbname=".$config['DB_Name'], 
-            $config['DB_User'], 
-            $config['DB_Pw']
-        );
-
         $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Models']." (Name,About) VALUES (?,?)");
         $cmd->execute(array($model['Name'],$model['About']));
         $id = $pdo->lastInsertId();
@@ -60,16 +62,10 @@ function CreateModel() {
     }
 }
 function UpdateModel() {
-    global $config;
+    global $config,$pdo;
     $model = json_decode($_POST['param1'],true);
 
     try {
-        $pdo = new PDO(
-            "mysql:host=".$config['host'].";dbname=".$config['DB_Name'], 
-            $config['DB_User'], 
-            $config['DB_Pw']
-        );
-
         $cmd = $pdo->prepare("UPDATE ".$config['TBL_Models']." SET Name = :New_Name, About = :New_About WHERE ID = :id");
         $cmd->execute(array('id' => $model['ID'], 'New_Name' => $model['Name'], 'New_About' => $model['About']));
     }
@@ -77,5 +73,94 @@ function UpdateModel() {
         echo "ERROR: ".$ex->getMessage();
     }
 }
+function GetModelByID() {
+    global $config,$pdo;
+    $modelID = $_GET['param1'];
+
+    try {  
+        $sql = "SELECT * FROM ".$config['TBL_Models']." WHERE ID = ".$modelID;
+        $models = array();
+        foreach ($pdo->query($sql) as $row) {
+            $models[] = array(
+                "Type" => 'Model',
+                "ID" => $row['ID'], 
+                "Name" => $row['Name'],
+                "About" => $row['About'],
+                "Avatar" => ReturnFilesByPath("../../models/".$row['ID'])
+            );
+        }
+        $myJSON = json_encode($models[0]);
+        echo $myJSON;
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
+function GetAllModels() {
+    global $config,$pdo;
+
+    try {
+        $sql = "SELECT * FROM ".$config['TBL_Models'];
+        $models = array();
+        foreach ($pdo->query($sql) as $row) {
+            $models[] = array(
+                "Type" => 'Model',
+                "ID" => $row['ID'], 
+                "Name" => $row['Name'],
+                "About" => $row['About'],
+                "Avatar" => ReturnFilesByPath("../../models/".$row['ID'])
+            );
+        }
+        $myJSON = json_encode($models);
+        echo $myJSON;
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
 #endregion Models
+
+#region File Management
+function GetFilesByPath() {
+    $path = urldecode($_GET['param1']);
+
+    try {
+        $files = ReturnFilesByPath($path);
+        if ($files)
+            echo $files;
+        else
+            echo json_encode($files);
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
+function ReturnFilesByPath($path) {
+    try {
+        $files = array_diff(scandir($path),array('..', '.'));
+        if (count($files) !== 0) {
+            $arraystring = '';
+            foreach($files as $file) {
+                $arraystring .= $file.';';
+            }
+            return substr($arraystring, 0, -1);
+        }
+        else
+            return false;
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
+function DeleteFile() {
+    $path = urldecode($_POST['param1']);
+
+    try {
+        unlink($path);
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
+#endregion File Management
 ?>

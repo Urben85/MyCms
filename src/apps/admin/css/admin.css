@@ -6,9 +6,20 @@ h1,h2,h3,h4,h5,h6 {
     color: #1BA1E2;
 }
 
+#main {
+    margin-left: 120px
+}
+
+.ListView {
+    border-left: 1px solid #7A80DD;
+}
+
 @media only screen and (max-width: 600px) {
     #main {
-        margin-left: 0
+        margin-left: 0;
+    }
+    .ListView {
+        border-left: none;
     }
 }
 
@@ -26,11 +37,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .Required {
-    color: red;
-}
-
-#main {
-    margin-left: 120px
+    color: #7A80DD;
 }
 
 #Loading {
@@ -76,10 +83,18 @@ h1,h2,h3,h4,h5,h6 {
     display: none;
 }
 
+.ControlLoading {
+    left: 45%;
+    position: relative;
+    color: #1BA1E2;
+    font-size: 40px;
+    margin-top: 10px;
+}
+
 .UploadControl_DragDropArea {
     width: 100%;
     height: 100px;
-    line-height: 85px;
+    line-height: 95px;
     text-align: center;
     float: left;
     margin-bottom: 10px;
@@ -130,6 +145,14 @@ h1,h2,h3,h4,h5,h6 {
 
 .UploadControl_DeleteFile {
     cursor: pointer;
-    color: red;
+    color: #FFF;
     float: right;
+}
+
+.ListView tr {
+    cursor: pointer;
+}
+
+.ListView tr:hover {
+    background: rgba(255,255,255,0.2);
 }
