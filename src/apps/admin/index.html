@@ -46,10 +46,10 @@
         <div class="w3-padding-large" style="max-width: 1100px" id="main">
 
             <!-- UPDATES Area -->
-            <div id="UPDATES_Area" class="w3-content w3-justify w3-text-grey w3-padding-64">
+            <div id="UPDATES_Area" class="w3-content w3-justify w3-padding-64">
                 <h2>UPDATES</h2>
                 <div id="UPDATES_Webpart" class="w3-row">
-                    <div class="w3-half w3-padding-large w3-left">
+                    <div id="UPDATE_Form" class="w3-half w3-padding-large w3-left">
                         <div class="w3-section">
                             <h5>Title</h5>
                             <input class="w3-input w3-padding-16" type="text" placeholder="Title" required id="Title">
@@ -66,15 +66,21 @@
                             <h5>Public</h5>
                             <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Public">
                         </div>
+                        <!--
+                            Models - Custom Field
+                            On Previews - Checkbox
+                            Update Image - Upload
+                            Photos - Upload
+                            Video Preview - Upload
+                            Videos - Upload
+                        -->
                         <div class="w3-section">
                             <button id="UpdateSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
                             <i class="fas fa-save"></i> SAVE
                             </button>
                         </div>
                     </div>
-                    <div class="w3-half w3-padding-large">
-                        <p>List</p>
-                    </div>
+                    <div id="UPDATES_ListView" class="w3-half w3-padding-large ListView"></div>
                 </div>
             </div>
             <!-- End UPDATES AREA -->
@@ -99,7 +105,7 @@
                         </div>
                         <div class="w3-section">
                             <h5>Customs</h5>
-                            <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Customs">
+                            <input id="Model_Customs" class="w3-input w3-padding-16 myCheckbox" type="checkbox">
                         </div>
                         <div class="w3-section w3-hide-small EditFormOnly">
                             <h5>Avatar</h5>
@@ -108,11 +114,6 @@
                         <div class="w3-section">
                             <button id="ModelSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
                                 <i class="fas fa-save"></i> SAVE
-                            </button>
-                        </div>
-                        <div class="w3-section">
-                            <button id="ModelDeleteBtn" class="w3-button w3-red w3-padding-large w3-margin-top myButton EditFormOnly" type="submit">
-                                <i class="far fa-trash-alt"></i> DELETE
                             </button>
                         </div>
                     </div>

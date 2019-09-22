@@ -51,8 +51,8 @@ function CreateModel() {
     $model = json_decode($_POST['param1'],true);
 
     try {
-        $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Models']." (Name,About) VALUES (?,?)");
-        $cmd->execute(array($model['Name'],$model['About']));
+        $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Models']." (Name,About) VALUES (?,?,?)");
+        $cmd->execute(array($model['Name'],$model['About'],$model['Customs']));
         $id = $pdo->lastInsertId();
         mkdir("../../models/".$id,0777,true);
         echo $id;
@@ -66,8 +66,8 @@ function UpdateModel() {
     $model = json_decode($_POST['param1'],true);
 
     try {
-        $cmd = $pdo->prepare("UPDATE ".$config['TBL_Models']." SET Name = :New_Name, About = :New_About WHERE ID = :id");
-        $cmd->execute(array('id' => $model['ID'], 'New_Name' => $model['Name'], 'New_About' => $model['About']));
+        $cmd = $pdo->prepare("UPDATE ".$config['TBL_Models']." SET Name = :New_Name, About = :New_About, Customs = :New_Customs WHERE ID = :id");
+        $cmd->execute(array('id' => $model['ID'], 'New_Name' => $model['Name'], 'New_About' => $model['About'], 'New_Customs' => $model['Customs']));
     }
     catch (Exception $ex) {
         echo "ERROR: ".$ex->getMessage();
@@ -86,6 +86,7 @@ function GetModelByID() {
                 "ID" => $row['ID'], 
                 "Name" => $row['Name'],
                 "About" => $row['About'],
+                "Customs" => $row['Customs'],
                 "Avatar" => ReturnFilesByPath("../../models/".$row['ID'])
             );
         }
@@ -108,6 +109,7 @@ function GetAllModels() {
                 "ID" => $row['ID'], 
                 "Name" => $row['Name'],
                 "About" => $row['About'],
+                "Customs" => $row['Customs'],
                 "Avatar" => ReturnFilesByPath("../../models/".$row['ID'])
             );
         }

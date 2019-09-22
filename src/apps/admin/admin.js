@@ -25,7 +25,6 @@ var ctx = {
         Description: null,
         PublishDate: null,
         Public: null,
-        Folder: null
     },
     Model: {
         ID: null,
@@ -141,13 +140,20 @@ function UiEvents() {
         }
     })
 }
+function ControlLoading(selector,show) {
+    var control = $(selector).empty();
+    if (show)
+        control.append('<i class="fas fa-circle-notch fa-spin ControlLoading">');
+}
 // ListView
-function InitListView(table,data,columns,order) {
+function InitListView(table,data,order,columns) {
     ctx.DataTable = $(table).DataTable({
         data: data,
         order: order,
         columns: columns,
-        buttons: ['Delete']
+        rowCallback: function ( row, data ) {
+            $('span.CustomsCbx',row).empty().append($('<input>').addClass('myCheckbox').attr('type','checkbox').attr('disabled', true).prop('checked', data.Customs === '1'));
+        }
     });
 }
 function CreateAndReturnTableForListView(selector,columns) {
@@ -159,7 +165,6 @@ function CreateAndReturnTableForListView(selector,columns) {
             $('<th>').html(column)
         );
     })
-    tr.append('<th>');
     table.append(thead.append(tr));
     var tbody = $('<tbody>');
     table.append(tbody);
@@ -181,11 +186,6 @@ function InitUploadControl(container,path,types,max,thumbs,text) {
     Control.parent().fadeIn(500);
     GetAndRenderFiles(Control);
 }
-function ControlLoading(selector,show) {
-    var control = $(selector).empty();
-    if (show)
-        control.append('<i class="fas fa-circle-notch fa-spin ControlLoading">');
-}
 function GetAndRenderFiles(Control) {
     // Get and Render Files
     var path = Control.attr('folder');
@@ -205,7 +205,7 @@ function GetAndRenderFiles(Control) {
                     var filepath = path + '/' + file;
                     var li = $('<li>');
                     var a = $('<a>').attr({'href':filepath,'target':'_blank'}).html(file);
-                    var del = $('<span>').addClass('UploadControl_DeleteFile').attr({file:file}).html('<i class="far fa-trash-alt"></i>');
+                    var del = $('<span>').addClass('UploadControl_DeleteFile').attr({file:file}).html('<i class="far fa-trash-alt""></i>');
                     li.append(a,del);
                     FilesList.append(li);
                 });
@@ -305,6 +305,19 @@ function FileUploadHandler(e) {
         }
     }
 }
+// Updates Functions
+function UpdateNewForm() {
+
+}
+function UpdateEditForm() {
+
+}
+function SaveUpdate() {
+
+}
+function UpdateListView() {
+    
+}
 // Models Functions
 function ModelNewForm() {
     ctx.Model.ID = null;
@@ -312,6 +325,7 @@ function ModelNewForm() {
     $('#MODEL_Area_Title').html('NEW MODEL');
     $('#Model_Name').val('');
     $('#Model_About').val('');
+    $('#Model_Customs').prop('checked', false);
     $('#Model_Avatar').empty();
 }
 function ModelEditForm() {
@@ -331,6 +345,7 @@ function ModelEditForm() {
                 $('#MODEL_Area_Title').html('EDIT: ' + ctx.Model.Name);
                 $('#Model_Name').val(ctx.Model.Name);
                 $('#Model_About').val(ctx.Model.About);
+                $('#Model_Customs').prop('checked',ctx.Model.Customs === '1' ? true : false);
                 InitUploadControl(
                     $('#Model_Avatar'),
                     ctx.Paths.Models + ctx.Model.ID,
@@ -352,6 +367,7 @@ function SaveModel() {
     if($('#Model_Name').val().trim() != '') {
         ctx.Model.Name = $('#Model_Name').val();
         ctx.Model.About = $('#Model_About').val();
+        ctx.Model.Customs = $('#Model_Customs').is(':checked') ? '1' : '0';
         var method = (ctx.Model.ID) ? 'UpdateModel' : 'CreateModel';
 
         Utilities.ShowLoading(true);
@@ -381,7 +397,7 @@ function ModelsListView() {
             Utilities.GeneralError();
         }
         else {
-            var Table = CreateAndReturnTableForListView($('#MODELS_ListView').empty(),'Avatar;Name');
+            var Table = CreateAndReturnTableForListView($('#MODELS_ListView').empty(),'Avatar;Name;Customs;Delete');
             var Models = JSON.parse(result);
             var Order = [[ 1, "asc" ]];
             var Columns = [
@@ -390,13 +406,19 @@ function ModelsListView() {
                     orderable: false,
                     render: (data,type,row) => {
                         if (data.Avatar)
-                            return $('<img>').addClass('w3-image').attr('src',ctx.Paths.Models + data.ID + '/' + data.Avatar)[0].outerHTML;
+                            return $('<img>').css('max-width','100px').attr('src',ctx.Paths.Models + data.ID + '/' + data.Avatar)[0].outerHTML;
                         else
                             return $('<i>').css('font-size','50px').addClass('fas fa-user')[0].outerHTML;
 
                     } 
                 },
                 { data: 'Name' },
+                { 
+                    data: 'Customs',
+                    render: (data,type,row) => {
+                        return $('<span>').addClass('CustomsCbx').html(data)[0].outerHTML;
+                    }  
+                },
                 { 
                     data: null,                             
                     orderable: false,
@@ -405,7 +427,7 @@ function ModelsListView() {
                     }
                 }
             ];
-            InitListView(Table,Models,Columns,Order);
+            InitListView(Table,Models,Order,Columns);
         }
     }).fail(() => {
         Utilities.GeneralError();
