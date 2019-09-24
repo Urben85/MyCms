@@ -51,7 +51,7 @@ function CreateModel() {
     $model = json_decode($_POST['param1'],true);
 
     try {
-        $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Models']." (Name,About) VALUES (?,?,?)");
+        $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Models']." (Name,About,Customs) VALUES (?,?,?)");
         $cmd->execute(array($model['Name'],$model['About'],$model['Customs']));
         $id = $pdo->lastInsertId();
         mkdir("../../models/".$id,0777,true);
