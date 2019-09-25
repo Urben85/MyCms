@@ -7,26 +7,26 @@ const ftp = require('gulp-ftp');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
 const param = require('yargs').argv;
-const config = require('./ftpconfig');
+const config = require('./config');
 
 function deploy(cb) {
-    ftpUpload('dist/**/*',remotePath(param.app),cb);
+    ftpUpload('dist/**/*', remotePath(param.app), cb);
 }
 
 function deployHTML(cb) {
-    ftpUpload('dist/*.html',remotePath(param.app),cb);
+    ftpUpload('dist/*.html', remotePath(param.app), cb);
 }
 
 function deployCSS(cb) {
-    ftpUpload('dist/css/*',remotePath(param.app) + '/css',cb);
+    ftpUpload('dist/css/*', remotePath(param.app) + '/css', cb);
 }
 
 function deployJS(cb) {
-    ftpUpload('dist/*.js',remotePath(param.app),cb);
+    ftpUpload('dist/*.js', remotePath(param.app), cb);
 }
 
 function deployPHP(cb) {
-    ftpUpload('dist/php/**/*.php',remotePath(param.app) + '/php',cb);
+    ftpUpload('dist/php/**/*.php', remotePath(param.app) + '/php', cb);
 }
 
 function build() {
@@ -34,7 +34,7 @@ function build() {
     src('src/apps/' + param.app + '/**/*').pipe(dest('dist'));
     src('src/commonphp/**/*').pipe(dest('dist/php'));
     // build js
-    return browserify({entries: 'src/apps/' + param.app + '/' + param.app + '.js', debug: true})
+    return browserify({ entries: 'src/apps/' + param.app + '/' + param.app + '.js', debug: true })
         .transform("babelify", { presets: ["es2015"] })
         .bundle()
         .pipe(source(param.app + '.js'))
@@ -53,7 +53,7 @@ function compressJS(cb) {
 }
 
 function clear() {
-    return src('dist/*', {read: false}).pipe(clean());
+    return src('dist/*', { read: false }).pipe(clean());
 }
 
 function remotePath(app) {
@@ -63,16 +63,24 @@ function remotePath(app) {
         return config.ftp.root;
 }
 
-function ftpUpload(source,target,cb) {
+function ftpUpload(source, target, cb) {
     src(source)
-    .pipe(ftp({
-        host: config.ftp.host,
-        user: config.ftp.user,
-        pass: config.ftp.pass,
-        remotePath: target
-    }))
-    .pipe(gutil.noop());
+        .pipe(ftp({
+            host: config.ftp.host,
+            user: config.ftp.user,
+            pass: config.ftp.pass,
+            remotePath: target
+        }))
+        .pipe(gutil.noop());
     cb();
+}
+
+function clearxampp() {
+    return src(config.xampp.path + param.app + '/*', { read: false }).pipe(clean({ force: true }));
+}
+
+function deployxampp() {
+    return src('dist/**/*').pipe(dest(config.xampp.path + param.app))
 }
 
 exports.build = series(clear, build, compressJS);
@@ -81,3 +89,4 @@ exports.deployhtml = series(clear, build, deployHTML);
 exports.deploycss = series(clear, build, deployCSS);
 exports.deployjs = series(clear, build, deployJS);
 exports.deployphp = series(clear, build, deployPHP);
+exports.xampp = series(clear, clearxampp, build, deployxampp);
