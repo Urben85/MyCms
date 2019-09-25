@@ -1,12 +1,18 @@
 <?php
 $config = [];
 $config['host'] = '127.0.0.1:3306';
-$config['DB_Name'] = 'd02d4189';
-$config['DB_User'] = 'd02d4189';
-$config['DB_Pw'] = 'HNwb9aCmBLGQK5pg';
 $config['TBL_Settings'] = 'settings';
 $config['TBL_Updates'] = 'updates';
 $config['TBL_Models'] = 'models';
+
+// CONFIG VALUES START
+$config['DB_Name'] = 'mycms';
+$config['DB_User'] = 'root';
+$config['DB_Pw'] = '';
+//$config['DB_Name'] = 'd02d4189';
+//$config['DB_User'] = 'd02d4189';
+//$config['DB_Pw'] = 'HNwb9aCmBLGQK5pg';
+// CONFIG VALUES END
 
 if (DBConnectionSuccessfull($config['host']) || DBConnectionSuccessfull('localhost:3306')) {
     GetConfigValues();

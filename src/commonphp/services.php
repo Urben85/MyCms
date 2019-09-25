@@ -20,6 +20,7 @@ function PostEventHandler() {
         case 'CreateModel' : CreateModel();break;
         case 'UpdateModel' : UpdateModel();break;
         case 'DeleteFile' : DeleteFile();break;
+        case 'CreateUpdate' : CreateUpdate();break;
     }
 }
 function GetEventHandler() {
@@ -44,6 +45,24 @@ function GetEventHandler() {
         echo "ERROR: ".$ex->getMessage();
     }
 }*/
+
+#region Updates
+function CreateUpdate() {
+    global $config,$pdo;
+    $update = json_decode($_POST['param1'],true);
+
+    try {
+        $cmd = $pdo->prepare("INSERT INTO ".$config['TBL_Updates']." (Title,Description,PublishDate,Public,OnPreviews) VALUES (?,?,?,?,?)");
+        $cmd->execute(array($update['Title'],$update['Description'],$update['PublishDate'],$update['Public'],$update['OnPreviews']));
+        $id = $pdo->lastInsertId();
+        CreateUpdateFolders($id);
+        echo $id;
+    }
+    catch (Exception $ex) {
+        echo "ERROR: ".$ex->getMessage();
+    }
+}
+#endregion Updates
 
 #region Models
 function CreateModel() {
@@ -163,6 +182,18 @@ function DeleteFile() {
     catch (Exception $ex) {
         echo "ERROR: ".$ex->getMessage();
     }
+}
+function CreateUpdateFolders($updateID) {
+    // Previewfolders
+    mkdir("../../previewfiles/".$updateID,0777,true);
+    mkdir("../../previewfiles/".$updateID."/image",0777,true);
+    mkdir("../../previewfiles/".$updateID."/image_thumbs",0777,true);
+    mkdir("../../previewfiles/".$updateID."/videopreview",0777,true);
+    // Memberfolders
+    mkdir("../../memberfiles/".$updateID,0777,true);
+    mkdir("../../memberfiles/".$updateID."/photos",0777,true);
+    mkdir("../../memberfiles/".$updateID."/photos_thumbs",0777,true);
+    mkdir("../../memberfiles/".$updateID."/videos",0777,true);
 }
 #endregion File Management
 ?>

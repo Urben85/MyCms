@@ -2,6 +2,7 @@
 
 // Libraries
 import $ from 'jquery';
+import datepicker from 'js-datepicker';
 require('datatables.net')();
 
 // Common
@@ -25,6 +26,7 @@ var ctx = {
         Description: null,
         PublishDate: null,
         Public: null,
+        OnPreviews: null
     },
     Model: {
         ID: null,
@@ -34,12 +36,14 @@ var ctx = {
         Avatar: null
     },
     Paths: {
-        Models: '../../models/'
+        Models: '../../models/',
+        Previews: '../../previewfiles/',
+        Members: '../../memberfiles/'
     }
 }
 // General Functions
 function Navigation() {
-    $(document).on('click','.w3-bar-item',(e) => {
+    $(document).on('click', '.w3-bar-item', (e) => {
         var navId = ($(e.target).attr('id')) ? $(e.target).attr('id') : $(e.target).parent().attr('id');
         var areaId = navId + '_Area';
         // Handle NavItem
@@ -52,8 +56,10 @@ function Navigation() {
         $('.w3-content').hide();
         $('#' + areaId).fadeIn(500);
         // Load Areas
-        switch(navId) {
+        switch (navId) {
             case 'UPDATES': {
+                UpdateNewForm();
+                UpdateListView();
                 break;
             }
             case 'MODELS': {
@@ -69,60 +75,60 @@ function Navigation() {
 }
 function UiEvents() {
     // ListView
-    $(document).on('click','.ListView tbody tr',(e) => {
+    $(document).on('click', '.ListView tbody tr', (e) => {
         var data = ctx.DataTable.row($(e.target).parents('tr')).data();
         ctx.Model.ID = data.ID;
-        
-        if (data.Type === 'Model') 
+
+        if (data.Type === 'Model')
             ModelEditForm();
-    } );
+    });
     // UploadControl
-    $(document).on('dragenter','.UploadControl_DragDropArea',(e) => {         
+    $(document).on('dragenter', '.UploadControl_DragDropArea', (e) => {
         e.preventDefault();
-        $(e.target).css('border','3px dashed #1BA1E2'); 
-        return false; 
+        $(e.target).css('border', '3px dashed #1BA1E2');
+        return false;
     })
-    $(document).on('dragover','.UploadControl_DragDropArea',(e) => {
+    $(document).on('dragover', '.UploadControl_DragDropArea', (e) => {
         e.preventDefault();
         return false;
     })
-    $(document).on('dragleave','.UploadControl_DragDropArea',(e) => {
+    $(document).on('dragleave', '.UploadControl_DragDropArea', (e) => {
         e.preventDefault();
-        $(e.target).css('border','3px dashed #FFF'); 
-        return false; 
+        $(e.target).css('border', '3px dashed #FFF');
+        return false;
     })
-    $(document).on('drop','.UploadControl_DragDropArea',(e) => {
+    $(document).on('drop', '.UploadControl_DragDropArea', (e) => {
         e.preventDefault();
-        $(e.target).css('border','3px dashed #FFF'); 
+        $(e.target).css('border', '3px dashed #FFF');
         FileUploadHandler(e);
     })
-    $(document).on('click','.UploadControl_DeleteFile',(e) => {
+    $(document).on('click', '.UploadControl_DeleteFile', (e) => {
         var FileList = $(e.target).parent().parent().parent();
         var li = $(e.target).parent().parent();
         var Folder = $(e.target).parent().parent().parent().parent().attr('folder');
         var File = $(e.target).parent().attr('file');
         // Delete File
-        $.when(Utilities.PostData('DeleteFile',encodeURIComponent(Folder + '/' + File))).then((result) => {
+        $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '/' + File))).then((result) => {
             if (result.startsWith('ERROR')) {
                 console.log(result);
                 Utilities.GeneralError();
             }
             else
-                li.fadeOut(500,() => { 
+                li.fadeOut(500, () => {
                     li.remove();
                     if (FileList.children().length === 0)
-                        FileList.fadeOut(500); 
+                        FileList.fadeOut(500);
                 });
         }).fail(() => {
             Utilities.GeneralError();
         });
     })
-    // Save Buttons on Click
-    $(document).on('click','.myButton',(e) => {
+    // myButton on Click
+    $(document).on('click', '.myButton', (e) => {
         var id = $(e.target).attr('id');
-        switch(id) {
+        switch (id) {
             case 'UpdateSaveBtn': {
-                console.log('Update Saved');
+                SaveUpdate();
                 break;
             }
             case 'ModelSaveBtn': {
@@ -140,27 +146,27 @@ function UiEvents() {
         }
     })
 }
-function ControlLoading(selector,show) {
+function ControlLoading(selector, show) {
     var control = $(selector).empty();
     if (show)
         control.append('<i class="fas fa-circle-notch fa-spin ControlLoading">');
 }
 // ListView
-function InitListView(table,data,order,columns) {
+function InitListView(table, data, order, columns) {
     ctx.DataTable = $(table).DataTable({
         data: data,
         order: order,
         columns: columns,
-        rowCallback: function ( row, data ) {
-            $('span.CustomsCbx',row).empty().append($('<input>').addClass('myCheckbox').attr('type','checkbox').attr('disabled', true).prop('checked', data.Customs === '1'));
+        rowCallback: function (row, data) {
+            $('span.CustomsCbx', row).empty().append($('<input>').addClass('myCheckbox').attr('type', 'checkbox').attr('disabled', true).prop('checked', data.Customs === '1'));
         }
     });
 }
-function CreateAndReturnTableForListView(selector,columns) {
+function CreateAndReturnTableForListView(selector, columns) {
     var table = $('<table>');
     var thead = $('<thead>');
     var tr = $('<tr>');
-    $(columns.split(';')).each((index,column) => {
+    $(columns.split(';')).each((index, column) => {
         tr.append(
             $('<th>').html(column)
         );
@@ -171,17 +177,29 @@ function CreateAndReturnTableForListView(selector,columns) {
     $(selector).empty().append(table);
     return $(selector).find('table');
 }
+// DatePicker Control
+function InitDatePickerControl(selector) {
+    if ($(selector).parent().find('.qs-datepicker').length === 0) {
+        datepicker(document.querySelector(selector), {
+            startDay: 1,
+            formatter: (el, date) => {
+                date.setDate(date.getDate());
+                el.value = date.toISOString().split('T')[0];
+            }
+        });
+    }
+}
 // Upload Control
-function InitUploadControl(container,path,types,max,thumbs,text) {
-    var Control = $(container).attr({'folder':path,'types':types,'max':max,'thumbs':thumbs});
+function InitUploadControl(container, path, types, max, thumbs, text) {
+    var Control = $(container).attr({ 'folder': path, 'types': types, 'max': max, 'thumbs': thumbs });
     var Loading = $('<div>').addClass('UploadControl_Loading');
     var FilesList = $('<ul>').addClass('UploadControl_FilesList');
     // Render Control
     if ($(container).find('.UploadControl_DragDropArea').length === 0) {
         var DragDropArea = $('<div>').addClass('UploadControl_DragDropArea').html(text);
-        var ProgressBar = $('<progress>').addClass('UploadControl_ProgressBar').attr({'value':'0','max':'100'});  
+        var ProgressBar = $('<progress>').addClass('UploadControl_ProgressBar').attr({ 'value': '0', 'max': '100' });
         var Status = $('<div>').addClass('UploadControl_Status');
-        Control.append(DragDropArea,ProgressBar,Loading,Status,FilesList);
+        Control.append(DragDropArea, ProgressBar, Loading, Status, FilesList);
     }
     Control.parent().fadeIn(500);
     GetAndRenderFiles(Control);
@@ -191,9 +209,9 @@ function GetAndRenderFiles(Control) {
     var path = Control.attr('folder');
     var FilesList = Control.find('.UploadControl_FilesList').empty().fadeOut(500);
     var Loading = Control.find('.UploadControl_Loading');
-    ControlLoading(Loading,true);
-    $.when(Utilities.GetData('GetFilesByPath',encodeURIComponent(path))).then((result) => {
-        ControlLoading(Loading,false);
+    ControlLoading(Loading, true);
+    $.when(Utilities.GetData('GetFilesByPath', encodeURIComponent(path))).then((result) => {
+        ControlLoading(Loading, false);
 
         if (result.startsWith('ERROR')) {
             console.log(result);
@@ -201,19 +219,19 @@ function GetAndRenderFiles(Control) {
         }
         else { // Render Files
             if (result.split(';').length != 0 && result != 'false') {
-                $(result.split(';')).each((index,file) => {
+                $(result.split(';')).each((index, file) => {
                     var filepath = path + '/' + file;
                     var li = $('<li>');
-                    var a = $('<a>').attr({'href':filepath,'target':'_blank'}).html(file);
-                    var del = $('<span>').addClass('UploadControl_DeleteFile').attr({file:file}).html('<i class="far fa-trash-alt""></i>');
-                    li.append(a,del);
+                    var a = $('<a>').attr({ 'href': filepath, 'target': '_blank' }).html(file);
+                    var del = $('<span>').addClass('UploadControl_DeleteFile').attr({ file: file }).html('<i class="far fa-trash-alt""></i>');
+                    li.append(a, del);
                     FilesList.append(li);
                 });
                 FilesList.fadeIn(500);
             }
         }
     }).fail(() => {
-        ControlLoading(Loading,false);
+        ControlLoading(Loading, false);
         Utilities.GeneralError();
     });
 }
@@ -238,16 +256,16 @@ function FileUploadHandler(e) {
         // Append Files to FormData
         for (var i = 0; i < Files.length; i++) {
             var file = Files[i];
-            MyFormData.append('files[]',file);
+            MyFormData.append('files[]', file);
         }
         // Build Ajax Object
         var url = 'php/upload.php?Folder=' + Folder;
         var ajax = new XMLHttpRequest();
-        ajax.upload.addEventListener('progress',ProgressHandler,false);
-        ajax.addEventListener('load',CompleteHandler,false);
-        ajax.addEventListener('error',ErrorHandler,false);
-        ajax.addEventListener('abort',AbortHandler,false);
-        ajax.open('POST',url,true);
+        ajax.upload.addEventListener('progress', ProgressHandler, false);
+        ajax.addEventListener('load', CompleteHandler, false);
+        ajax.addEventListener('error', ErrorHandler, false);
+        ajax.addEventListener('abort', AbortHandler, false);
+        ajax.open('POST', url, true);
         // Send Ajax Request
         ajax.send(MyFormData);
         // EventListeners
@@ -258,7 +276,7 @@ function FileUploadHandler(e) {
         }
         function CompleteHandler(e) {
             ProgressBar.val(0).fadeOut(500);
-            Status.fadeOut(500,() => {
+            Status.fadeOut(500, () => {
                 DropArea.fadeIn(500);
                 GetAndRenderFiles(Control);
             });
@@ -276,7 +294,7 @@ function FileUploadHandler(e) {
         if (FileTypesAllowed()) {
             var UploadedFileCount = FileList.children().length;
             var FilesCount = Files.length;
-            
+
             if (UploadedFileCount >= Max || FilesCount > Max) {
                 alert('Sorry you only upload ' + Max + ' file(s) here :-(');
                 return false;
@@ -292,8 +310,8 @@ function FileUploadHandler(e) {
         function FileTypesAllowed() {
             var allowed = false;
             if (Types != '*') {
-                $(Files).each((fileIndex,file) => {
-                    $(Types.split(';')).each((typeIndex,type) => {
+                $(Files).each((fileIndex, file) => {
+                    $(Types.split(';')).each((typeIndex, type) => {
                         if (file.type == type)
                             allowed = true;
                     });
@@ -307,19 +325,59 @@ function FileUploadHandler(e) {
 }
 // Updates Functions
 function UpdateNewForm() {
-
+    Utilities.ShowLoading(false);
+    ctx.Update.ID = null;
+    $('#UPDATE_Form').find('.EditFormOnly').fadeOut(500);
+    $('#UPDATE_Area_Title').html('NEW UPDATE');
+    $('#Update_Title').val('');
+    $('#Update_Description').val('');
+    $('#Update_PublishDate').val('');
+    InitDatePickerControl('#Update_PublishDate');
+    $('#Update_Public').prop('checked', false);
+    $('#Update_OnPreviews').prop('checked', false);
+    $('Update_Image').empty();
+    $('Update_Photos').empty();
+    $('Update_VideoPreview').empty();
+    $('Update_Videos').empty();
 }
 function UpdateEditForm() {
-
+    Utilities.ShowLoading(false);
 }
 function SaveUpdate() {
+    if ($('#Update_Title').val().trim() != '') {
+        ctx.Update.Title = $('#Update_Title').val();
+        ctx.Update.Description = $('#Update_Description').val();
+        ctx.Update.PublishDate = $('#Update_PublishDate').val();
+        ctx.Update.Public = $('#Update_Public').is(':checked') ? '1' : '0';
+        ctx.Update.OnPreviews = $('#Update_OnPreviews').is(':checked') ? '1' : '0';
+        var method = (ctx.Update.ID) ? 'UpdateUpdate' : 'CreateUpdate';
 
+        Utilities.ShowLoading(true);
+        $.when(Utilities.PostData(method, JSON.stringify(ctx.Update))).then((result) => {
+
+            if (result.startsWith('ERROR')) {
+                console.log(result);
+                Utilities.GeneralError();
+            }
+            else if (!ctx.Update.ID)
+                ctx.Update.ID = result;
+
+            UpdateEditForm();
+            UpdateListView();
+        }).fail(() => {
+            Utilities.ShowLoading(false);
+            Utilities.GeneralError();
+        });
+    }
+    else
+        alert('An Update must at least have a Title.');
 }
 function UpdateListView() {
-    
+
 }
 // Models Functions
 function ModelNewForm() {
+    Utilities.ShowLoading(false);
     ctx.Model.ID = null;
     $('#MODEL_Form').find('.EditFormOnly').fadeOut(500);
     $('#MODEL_Area_Title').html('NEW MODEL');
@@ -331,7 +389,7 @@ function ModelNewForm() {
 function ModelEditForm() {
     if (ctx.Model.ID) {
         Utilities.ShowLoading(true);
-        $.when(Utilities.GetData('GetModelByID',ctx.Model.ID)).then((result) => {
+        $.when(Utilities.GetData('GetModelByID', ctx.Model.ID)).then((result) => {
             Utilities.ShowLoading(false);
 
             if (result.startsWith('ERROR')) {
@@ -345,7 +403,7 @@ function ModelEditForm() {
                 $('#MODEL_Area_Title').html('EDIT: ' + ctx.Model.Name);
                 $('#Model_Name').val(ctx.Model.Name);
                 $('#Model_About').val(ctx.Model.About);
-                $('#Model_Customs').prop('checked',ctx.Model.Customs === '1' ? true : false);
+                $('#Model_Customs').prop('checked', ctx.Model.Customs === '1' ? true : false);
                 InitUploadControl(
                     $('#Model_Avatar'),
                     ctx.Paths.Models + ctx.Model.ID,
@@ -358,20 +416,20 @@ function ModelEditForm() {
         }).fail(() => {
             Utilities.ShowLoading(false);
             Utilities.GeneralError();
-        }); 
+        });
     }
     else
         ModelNewForm();
 }
 function SaveModel() {
-    if($('#Model_Name').val().trim() != '') {
+    if ($('#Model_Name').val().trim() != '') {
         ctx.Model.Name = $('#Model_Name').val();
         ctx.Model.About = $('#Model_About').val();
         ctx.Model.Customs = $('#Model_Customs').is(':checked') ? '1' : '0';
         var method = (ctx.Model.ID) ? 'UpdateModel' : 'CreateModel';
 
         Utilities.ShowLoading(true);
-        $.when(Utilities.PostData(method,JSON.stringify(ctx.Model))).then((result) => {
+        $.when(Utilities.PostData(method, JSON.stringify(ctx.Model))).then((result) => {
 
             if (result.startsWith('ERROR')) {
                 console.log(result);
@@ -385,7 +443,7 @@ function SaveModel() {
         }).fail(() => {
             Utilities.ShowLoading(false);
             Utilities.GeneralError();
-        }); 
+        });
     }
     else
         alert('A Model must at least have a name.');
@@ -397,39 +455,39 @@ function ModelsListView() {
             Utilities.GeneralError();
         }
         else {
-            var Table = CreateAndReturnTableForListView($('#MODELS_ListView').empty(),'Avatar;Name;Customs;Delete');
+            var Table = CreateAndReturnTableForListView($('#MODELS_ListView').empty(), 'Avatar;Name;Customs;Delete');
             var Models = JSON.parse(result);
-            var Order = [[ 1, "asc" ]];
+            var Order = [[1, "asc"]];
             var Columns = [
-                { 
+                {
                     data: null,
                     orderable: false,
-                    render: (data,type,row) => {
+                    render: (data, type, row) => {
                         if (data.Avatar)
-                            return $('<img>').css('max-width','100px').attr('src',ctx.Paths.Models + data.ID + '/' + data.Avatar)[0].outerHTML;
+                            return $('<img>').css('max-width', '100px').attr('src', ctx.Paths.Models + data.ID + '/' + data.Avatar)[0].outerHTML;
                         else
-                            return $('<i>').css('font-size','50px').addClass('fas fa-user')[0].outerHTML;
+                            return $('<i>').css('font-size', '50px').addClass('fas fa-user')[0].outerHTML;
 
-                    } 
+                    }
                 },
                 { data: 'Name' },
-                { 
+                {
                     data: 'Customs',
-                    render: (data,type,row) => {
+                    render: (data, type, row) => {
                         return $('<span>').addClass('CustomsCbx').html(data)[0].outerHTML;
-                    }  
+                    }
                 },
-                { 
-                    data: null,                             
+                {
+                    data: null,
                     orderable: false,
                     render: () => {
                         return $('<div>').addClass('DeleteModel').html('<i class="far fa-trash-alt"></i>')[0].outerHTML;
                     }
                 }
             ];
-            InitListView(Table,Models,Order,Columns);
+            InitListView(Table, Models, Order, Columns);
         }
     }).fail(() => {
         Utilities.GeneralError();
-    }); 
+    });
 }

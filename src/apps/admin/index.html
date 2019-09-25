@@ -1,170 +1,198 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>myCMS</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-        <link rel="stylesheet" href="css/jquery.dataTables.css">
-        <link rel="stylesheet" href="css/admin.css">
-        <script type="text/javascript" src="admin.js"></script>
-    </head>
-    <body class="w3-black">
-        <!-- Loading -->
-        <div id="Loading"><i class="fas fa-circle-notch fa-spin" style="font-size:50px"></i></div>
-        <!-- End Loading -->
 
-        <!-- Navigation -->
-        <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
-            <img src="images/logo.png" style="width:100%">
-            <a id="UPDATES" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
-                <i class="fas fa-marker w3-xxlarge"></i>
-                <p>UPDATES</p>
-            </a>
-            <a id="MODELS" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
-                <i class="fas fa-users w3-xxlarge"></i>
-                <p>MODELS</p>
-            </a>
-            <a id="SETTINGS" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
-                <i class="fas fa-sliders-h w3-xxlarge"></i>
-                <p>SETTINGS</p>
-            </a>
-        </nav>
-        <!-- Navigation on small screens (Hidden on medium and large screens) -->
-        <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-            <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-                <a id="UPDATES" class="w3-bar-item w3-button MobileNav" style="width:25% !important">UPDATES</a>
-                <a id="MODELS" class="w3-bar-item w3-button MobileNav" style="width:25% !important">MODELS</a>
-                <a id="SETTINGS" class="w3-bar-item w3-button MobileNav" style="width:25% !important">SETTINGS</a>
-            </div>
+<head>
+    <title>myCMS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/datepicker.css" />
+    <link rel="stylesheet" href="css/admin.css">
+    <script type="text/javascript" src="admin.js"></script>
+</head>
+
+<body class="w3-black">
+    <!-- Loading -->
+    <div id="Loading"><i class="fas fa-circle-notch fa-spin" style="font-size:50px"></i></div>
+    <!-- End Loading -->
+
+    <!-- Navigation -->
+    <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+        <img src="images/logo.png" style="width:100%">
+        <a id="UPDATES" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
+            <i class="fas fa-marker w3-xxlarge"></i>
+            <p>UPDATES</p>
+        </a>
+        <a id="MODELS" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
+            <i class="fas fa-users w3-xxlarge"></i>
+            <p>MODELS</p>
+        </a>
+        <a id="SETTINGS" class="w3-bar-item w3-button w3-padding-large w3-hover-black MainNav">
+            <i class="fas fa-sliders-h w3-xxlarge"></i>
+            <p>SETTINGS</p>
+        </a>
+    </nav>
+    <!-- Navigation on small screens (Hidden on medium and large screens) -->
+    <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+        <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+            <a id="UPDATES" class="w3-bar-item w3-button MobileNav" style="width:25% !important">UPDATES</a>
+            <a id="MODELS" class="w3-bar-item w3-button MobileNav" style="width:25% !important">MODELS</a>
+            <a id="SETTINGS" class="w3-bar-item w3-button MobileNav" style="width:25% !important">SETTINGS</a>
         </div>
-        <!-- End Navigation -->
+    </div>
+    <!-- End Navigation -->
 
-        <!-- Page Content -->
-        <div class="w3-padding-large" style="max-width: 1100px" id="main">
+    <!-- Page Content -->
+    <div class="w3-padding-large" style="max-width: 1100px" id="main">
 
-            <!-- UPDATES Area -->
-            <div id="UPDATES_Area" class="w3-content w3-justify w3-padding-64">
-                <h2>UPDATES</h2>
-                <div id="UPDATES_Webpart" class="w3-row">
-                    <div id="UPDATE_Form" class="w3-half w3-padding-large w3-left">
-                        <div class="w3-section">
-                            <h5>Title</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Title" required id="Title">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Description</h5>
-                            <textarea class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="Description" required id="Description"></textarea>
-                        </div>
-                        <div class="w3-section">
-                            <h5>Publish Date</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Publish Date" required id="PublishDate">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Public</h5>
-                            <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Public">
-                        </div>
-                        <!--
+        <!-- UPDATES Area -->
+        <div id="UPDATES_Area" class="w3-content w3-justify w3-padding-64">
+            <h2 id="UPDATE_Area_Title"></h2>
+            <div id="UPDATES_Webpart" class="w3-row">
+                <div id="UPDATE_Form" class="w3-half w3-padding-large w3-left">
+                    <div class="w3-section">
+                        <h5>Title <span class="Required">*</span></h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Title" id="Update_Title">
+                    </div>
+                    <div class="w3-section">
+                        <h5>Description</h5>
+                        <textarea class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="Description" required
+                            id="Update_Description"></textarea>
+                    </div>
+                    <div class="w3-section">
+                        <h5>Publish Date</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Publish Date" required
+                            id="Update_PublishDate">
+                    </div>
+                    <!--
                             Models - Custom Field
-                            On Previews - Checkbox
-                            Update Image - Upload
-                            Photos - Upload
-                            Video Preview - Upload
-                            Videos - Upload
                         -->
-                        <div class="w3-section">
-                            <button id="UpdateSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
+                    <div class="w3-section">
+                        <h5>Public</h5>
+                        <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Update_Public">
+                    </div>
+                    <div class="w3-section">
+                        <h5>On Previews</h5>
+                        <input class="w3-input w3-padding-16 myCheckbox" type="checkbox" id="Update_OnPreviews">
+                    </div>
+                    <div class="w3-section w3-hide-small EditFormOnly">
+                        <h5>Update Image</h5>
+                        <div id="Update_Image" class="UploadControl"></div>
+                    </div>
+                    <div class="w3-section w3-hide-small EditFormOnly">
+                        <h5>Photos</h5>
+                        <div id="Update_Photos" class="UploadControl"></div>
+                    </div>
+                    <div class="w3-section w3-hide-small EditFormOnly">
+                        <h5>Video Preview</h5>
+                        <div id="Update_VideoPreview" class="UploadControl"></div>
+                    </div>
+                    <div class="w3-section w3-hide-small EditFormOnly">
+                        <h5>Videos</h5>
+                        <div id="Update_Videos" class="UploadControl"></div>
+                    </div>
+                    <div class="w3-section">
+                        <button id="UpdateSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton"
+                            type="submit">
                             <i class="fas fa-save"></i> SAVE
-                            </button>
-                        </div>
-                    </div>
-                    <div id="UPDATES_ListView" class="w3-half w3-padding-large ListView"></div>
-                </div>
-            </div>
-            <!-- End UPDATES AREA -->
-
-            <!-- MODELS Area -->
-            <div id="MODELS_Area" class="w3-content w3-justify w3-padding-64">
-                <h2 id="MODEL_Area_Title"></h2>
-                <div id="MODELS_Webpart" class="w3-row">
-                    <div id="MODEL_Form" class="w3-half w3-padding-large" style="min-width: 400px">
-                        <div class="w3-section">
-                            <button id="ModelNewBtn" class="w3-button w3-green w3-padding-large w3-margin-top myButton EditFormOnly" type="submit">
-                                <i class="fas fa-plus-square"></i> NEW MODEL
-                            </button>
-                        </div>
-                        <div class="w3-section">
-                            <h5>Name <span class="Required">*</span></h5>
-                            <input id="Model_Name" class="w3-input w3-padding-16" type="text" placeholder="Name">
-                        </div>
-                        <div class="w3-section">
-                            <h5>About</h5>
-                            <textarea id="Model_About" class="w3-input w3-padding-16 myTextArea" rows="5" placeholder="About"></textarea>
-                        </div>
-                        <div class="w3-section">
-                            <h5>Customs</h5>
-                            <input id="Model_Customs" class="w3-input w3-padding-16 myCheckbox" type="checkbox">
-                        </div>
-                        <div class="w3-section w3-hide-small EditFormOnly">
-                            <h5>Avatar</h5>
-                            <div id="Model_Avatar" class="UploadControl"></div>
-                        </div>
-                        <div class="w3-section">
-                            <button id="ModelSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
-                                <i class="fas fa-save"></i> SAVE
-                            </button>
-                        </div>
-                    </div>
-                    <div id="MODELS_ListView" class="w3-half w3-padding-large ListView"></div>
-                </div>
-            </div>
-            <!-- End MODELS AREA -->
-
-            <!-- SETTINGS Area -->
-            <div id="SETTINGS_Area" class="w3-content w3-justify w3-text-grey w3-padding-64">
-                <h2>SETTINGS</h2>
-                <div id="SETTINGS_Webpart">
-                    <div class="w3-padding-large">
-                        <div class="w3-section">
-                            <h5>Setting 1</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Setting 2</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Setting 3</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Setting 4</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </div>
-                        <div class="w3-section">
-                            <h5>Setting 5</h5>
-                            <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
-                        </div>
-                        <div class="w3-section">
-                            <button id="SettingsSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton" type="submit">
-                            <i class="fas fa-save"></i> SAVE
-                            </button>
-                        </div>
+                        </button>
                     </div>
                 </div>
+                <div id="UPDATES_ListView" class="w3-half w3-padding-large ListView"></div>
             </div>
-            <!-- End SETTINGS AREA -->
-
-            <!-- Footer -->
-            <footer class="w3-padding-64 w3-text-grey w3-xlarge">
-                <p class="w3-medium w3-right">myCMS Version 1.0.0</p>
-            </footer>
-            <!-- End footer -->
-
         </div>
-        <!-- END PAGE CONTENT -->
+        <!-- End UPDATES AREA -->
 
-    </body>
+        <!-- MODELS Area -->
+        <div id="MODELS_Area" class="w3-content w3-justify w3-padding-64">
+            <h2 id="MODEL_Area_Title"></h2>
+            <div id="MODELS_Webpart" class="w3-row">
+                <div id="MODEL_Form" class="w3-half w3-padding-large" style="min-width: 400px">
+                    <div class="w3-section">
+                        <button id="ModelNewBtn"
+                            class="w3-button w3-green w3-padding-large w3-margin-top myButton EditFormOnly"
+                            type="submit">
+                            <i class="fas fa-plus-square"></i> NEW MODEL
+                        </button>
+                    </div>
+                    <div class="w3-section">
+                        <h5>Name <span class="Required">*</span></h5>
+                        <input id="Model_Name" class="w3-input w3-padding-16" type="text" placeholder="Name">
+                    </div>
+                    <div class="w3-section">
+                        <h5>About</h5>
+                        <textarea id="Model_About" class="w3-input w3-padding-16 myTextArea" rows="5"
+                            placeholder="About"></textarea>
+                    </div>
+                    <div class="w3-section">
+                        <h5>Customs</h5>
+                        <input id="Model_Customs" class="w3-input w3-padding-16 myCheckbox" type="checkbox">
+                    </div>
+                    <div class="w3-section w3-hide-small EditFormOnly">
+                        <h5>Avatar</h5>
+                        <div id="Model_Avatar" class="UploadControl"></div>
+                    </div>
+                    <div class="w3-section">
+                        <button id="ModelSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton"
+                            type="submit">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                    </div>
+                </div>
+                <div id="MODELS_ListView" class="w3-half w3-padding-large ListView"></div>
+            </div>
+        </div>
+        <!-- End MODELS AREA -->
+
+        <!-- SETTINGS Area -->
+        <div id="SETTINGS_Area" class="w3-content w3-justify w3-text-grey w3-padding-64">
+            <h2>SETTINGS</h2>
+            <div id="SETTINGS_Webpart">
+                <div class="w3-padding-large">
+                    <div class="w3-section">
+                        <h5>Setting 1</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
+                    </div>
+                    <div class="w3-section">
+                        <h5>Setting 2</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
+                    </div>
+                    <div class="w3-section">
+                        <h5>Setting 3</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
+                    </div>
+                    <div class="w3-section">
+                        <h5>Setting 4</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
+                    </div>
+                    <div class="w3-section">
+                        <h5>Setting 5</h5>
+                        <input class="w3-input w3-padding-16" type="text" placeholder="Setting" required id="Name">
+                    </div>
+                    <div class="w3-section">
+                        <button id="SettingsSaveBtn" class="w3-button w3-blue w3-padding-large w3-margin-top myButton"
+                            type="submit">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End SETTINGS AREA -->
+
+        <!-- Footer -->
+        <footer class="w3-padding-64 w3-text-grey w3-xlarge">
+            <p class="w3-medium w3-right">myCMS Version 1.0.0</p>
+        </footer>
+        <!-- End footer -->
+
+    </div>
+    <!-- END PAGE CONTENT -->
+
+</body>
+
 </html>
