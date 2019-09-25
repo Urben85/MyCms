@@ -117,18 +117,18 @@ function UiEvents() {
         var Thumbs = $(e.target).parent().parent().parent().parent().attr('thumbs') === 'true' ? true : false;
         var File = $(e.target).parent().attr('file');
         // Delete File
-        $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '/' + File))).then((result) => {
+        $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '/' + File))).then((result1) => {
             
-            if (result.startsWith('ERROR')) {
-                console.log(result);
+            if (result1.startsWith('ERROR')) {
+                console.log(result1);
                 Utilities.GeneralError();
             }
             else {
                 if (Thumbs) {
-                    $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '_thumbs/' + File))).then((result) => {
+                    $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '_thumbs/' + File))).then((result2) => {
 
-                        if (result.startsWith('ERROR')) {
-                            console.log(result);
+                        if (result2.startsWith('ERROR')) {
+                            console.log(result2);
                             Utilities.GeneralError();
                         }
                         else {
