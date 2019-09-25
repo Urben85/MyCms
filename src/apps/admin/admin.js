@@ -114,19 +114,41 @@ function UiEvents() {
         var FileList = $(e.target).parent().parent().parent();
         var li = $(e.target).parent().parent();
         var Folder = $(e.target).parent().parent().parent().parent().attr('folder');
+        var Thumbs = $(e.target).parent().parent().parent().parent().attr('thumbs') === 'true' ? true : false;
         var File = $(e.target).parent().attr('file');
         // Delete File
         $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '/' + File))).then((result) => {
+            
             if (result.startsWith('ERROR')) {
                 console.log(result);
                 Utilities.GeneralError();
             }
-            else
-                li.fadeOut(500, () => {
-                    li.remove();
-                    if (FileList.children().length === 0)
-                        FileList.fadeOut(500);
-                });
+            else {
+                if (Thumbs) {
+                    $.when(Utilities.PostData('DeleteFile', encodeURIComponent(Folder + '_thumbs/' + File))).then((result) => {
+
+                        if (result.startsWith('ERROR')) {
+                            console.log(result);
+                            Utilities.GeneralError();
+                        }
+                        else {
+                            li.fadeOut(500, () => {
+                                li.remove();
+                                if (FileList.children().length === 0)
+                                    FileList.fadeOut(500);
+                            });
+                        }
+                    });
+                }
+                else {
+                    li.fadeOut(500, () => {
+                        li.remove();
+                        if (FileList.children().length === 0)
+                            FileList.fadeOut(500);
+                    });
+                }
+            }
+
         }).fail(() => {
             Utilities.GeneralError();
         });
@@ -287,8 +309,27 @@ function FileUploadHandler(e) {
         function CompleteHandler(e) {
             ProgressBar.val(0).fadeOut(500);
             Status.fadeOut(500, () => {
-                DropArea.fadeIn(500);
-                GetAndRenderFiles(Control);
+                if (Thumbs) {
+                    ControlLoading(Loading, true);
+                    Status.empty().html('Creating Thumbnails...').fadeIn(500);
+                    $.when(Utilities.CreateThumbnails(Folder)).then((result) => {
+                        
+                        if (result.startsWith('ERROR')) {
+                            console.log(result);
+                            Status.empty().html('Creating Thumbnails failed :-(');
+                        }
+                        else {
+                            Status.fadeOut(500, () => { 
+                                DropArea.fadeIn(500);
+                                GetAndRenderFiles(Control);
+                            });
+                        }
+                    });
+                }
+                else {
+                    DropArea.fadeIn(500);
+                    GetAndRenderFiles(Control);
+                }
             });
         }
         function ErrorHandler(e) {
@@ -391,7 +432,7 @@ function UpdateEditForm() {
                     ctx.Paths.Previews + ctx.Update.ID + '/videopreview',
                     '*',
                     1,
-                    true,
+                    false,
                     'Drag & Drop here'
                 );
                 InitUploadControl(
@@ -399,7 +440,7 @@ function UpdateEditForm() {
                     ctx.Paths.Members + ctx.Update.ID + '/videos',
                     '*',
                     1000,
-                    true,
+                    false,
                     'Drag & Drop here'
                 );
             }

@@ -29,4 +29,12 @@ export default class {
             data: { function:method, param1:param1 }
         });
     }
+
+    static CreateThumbnails(folder) {
+        return $.ajax({
+            type: "POST",
+            dataType: "text",
+            url: `php/upload.php?Folder=${folder}&Thumbs=true`
+        });
+    }
 }
