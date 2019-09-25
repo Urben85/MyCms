@@ -21,14 +21,17 @@ $(document).ready(() => {
 var ctx = {
     DataTable: null,
     Update: {
+        Type: 'Update',
         ID: null,
         Title: null,
         Description: null,
         PublishDate: null,
         Public: null,
-        OnPreviews: null
+        OnPreviews: null,
+        PreviewImage: null
     },
     Model: {
+        Type: 'Model',
         ID: null,
         Name: null,
         About: null,
@@ -77,10 +80,15 @@ function UiEvents() {
     // ListView
     $(document).on('click', '.ListView tbody tr', (e) => {
         var data = ctx.DataTable.row($(e.target).parents('tr')).data();
-        ctx.Model.ID = data.ID;
 
-        if (data.Type === 'Model')
+        if (data.Type === 'Model') {
+            ctx.Model.ID = data.ID;
             ModelEditForm();
+        }
+        else if (data.Type === 'Update') {
+            ctx.Update.ID = data.ID;
+            UpdateEditForm();
+        }
     });
     // UploadControl
     $(document).on('dragenter', '.UploadControl_DragDropArea', (e) => {
@@ -131,6 +139,10 @@ function UiEvents() {
                 SaveUpdate();
                 break;
             }
+            case 'UpdateNewBtn': {
+                UpdateNewForm();
+                break;
+            }
             case 'ModelSaveBtn': {
                 SaveModel();
                 break;
@@ -152,14 +164,12 @@ function ControlLoading(selector, show) {
         control.append('<i class="fas fa-circle-notch fa-spin ControlLoading">');
 }
 // ListView
-function InitListView(table, data, order, columns) {
+function InitListView(table, data, order, columns, rowCallback) {
     ctx.DataTable = $(table).DataTable({
         data: data,
         order: order,
         columns: columns,
-        rowCallback: function (row, data) {
-            $('span.CustomsCbx', row).empty().append($('<input>').addClass('myCheckbox').attr('type', 'checkbox').attr('disabled', true).prop('checked', data.Customs === '1'));
-        }
+        rowCallback: rowCallback
     });
 }
 function CreateAndReturnTableForListView(selector, columns) {
@@ -341,7 +351,65 @@ function UpdateNewForm() {
     $('Update_Videos').empty();
 }
 function UpdateEditForm() {
-    Utilities.ShowLoading(false);
+    if (ctx.Update.ID) {
+        Utilities.ShowLoading(true);
+        $.when(Utilities.GetData('GetUpdateByID', ctx.Update.ID)).then((result) => {
+            Utilities.ShowLoading(false);
+
+            if (result.startsWith('ERROR')) {
+                console.log(result);
+                Utilities.GeneralError();
+            }
+            else {
+                ctx.Update = JSON.parse(result);
+                // Fill out Form
+                $('#UPDATE_Form').find('.EditFormOnly').fadeIn(500);
+                $('#UPDATE_Area_Title').html('EDIT: ' + ctx.Update.Title);
+                $('#Update_Title').val(ctx.Update.Title);
+                $('#Update_Description').val(ctx.Update.Description);
+                $('#Update_PublishDate').val(ctx.Update.PublishDate);
+                $('#Update_Public').prop('checked', ctx.Update.Public === '1' ? true : false);
+                $('#Update_OnPreviews').prop('checked', ctx.Update.OnPreviews === '1' ? true : false);
+                InitUploadControl(
+                    $('#Update_Image'),
+                    ctx.Paths.Previews + ctx.Update.ID + '/image',
+                    'image/jpg;image/jpeg;image/png',
+                    1,
+                    true,
+                    'Drag & Drop here (JPG or PNG)'
+                );
+                InitUploadControl(
+                    $('#Update_Photos'),
+                    ctx.Paths.Members + ctx.Update.ID + '/photos',
+                    'image/jpg;image/jpeg;image/png',
+                    1000,
+                    true,
+                    'Drag & Drop here (JPG or PNG)'
+                );
+                InitUploadControl(
+                    $('#Update_VideoPreview'),
+                    ctx.Paths.Previews + ctx.Update.ID + '/videopreview',
+                    '*',
+                    1,
+                    true,
+                    'Drag & Drop here'
+                );
+                InitUploadControl(
+                    $('#Update_Videos'),
+                    ctx.Paths.Members + ctx.Update.ID + '/videos',
+                    '*',
+                    1000,
+                    true,
+                    'Drag & Drop here'
+                );
+            }
+        }).fail(() => {
+            Utilities.ShowLoading(false);
+            Utilities.GeneralError();
+        });
+    }
+    else
+        UpdateNewForm();
 }
 function SaveUpdate() {
     if ($('#Update_Title').val().trim() != '') {
@@ -373,7 +441,58 @@ function SaveUpdate() {
         alert('An Update must at least have a Title.');
 }
 function UpdateListView() {
+    $.when(Utilities.GetData('GetAllUpdates')).then((result) => {
+        if (result.startsWith('ERROR')) {
+            console.log(result);
+            Utilities.GeneralError();
+        }
+        else {
+            var Table = CreateAndReturnTableForListView($('#UPDATES_ListView').empty(), 'Update Image;Title;Publish Date;Public;On Previews;Delete');
+            var Updates = JSON.parse(result);
+            var Order = [[1, "asc"]];
+            var Columns = [
+                {
+                    data: null,
+                    orderable: false,
+                    render: (data, type, row) => {
+                        if (data.PreviewImage)
+                            return $('<img>').css('max-width', '100px').attr('src', ctx.Paths.Previews + data.ID + '/image_thumbs/' + data.PreviewImage)[0].outerHTML;
+                        else
+                            return $('<i>').css('font-size', '50px').addClass('fas fa-image')[0].outerHTML;
 
+                    }
+                },
+                { data: 'Title' },
+                { data: 'PublishDate' },
+                {
+                    data: 'Public',
+                    render: (data, type, row) => {
+                        return $('<span>').addClass('PublicCbx').html(data)[0].outerHTML;
+                    }
+                },
+                {
+                    data: 'OnPreviews',
+                    render: (data, type, row) => {
+                        return $('<span>').addClass('OnPreviewsCbx').html(data)[0].outerHTML;
+                    }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    render: () => {
+                        return $('<div>').addClass('DeleteUpdate').html('<i class="far fa-trash-alt"></i>')[0].outerHTML;
+                    }
+                }
+            ];
+            var RowCallback = (row, data) => {
+                $('span.PublicCbx', row).empty().append($('<input>').addClass('myCheckbox').attr('type', 'checkbox').attr('disabled', true).prop('checked', data.Public === '1'));
+                $('span.OnPreviewsCbx', row).empty().append($('<input>').addClass('myCheckbox').attr('type', 'checkbox').attr('disabled', true).prop('checked', data.OnPreviews === '1'));
+            };
+            InitListView(Table, Updates, Order, Columns, RowCallback);
+        }
+    }).fail(() => {
+        Utilities.GeneralError();
+    });
 }
 // Models Functions
 function ModelNewForm() {
@@ -485,7 +604,10 @@ function ModelsListView() {
                     }
                 }
             ];
-            InitListView(Table, Models, Order, Columns);
+            var RowCallback = (row, data) => {
+                $('span.CustomsCbx', row).empty().append($('<input>').addClass('myCheckbox').attr('type', 'checkbox').attr('disabled', true).prop('checked', data.Customs === '1'));
+            };
+            InitListView(Table, Models, Order, Columns, RowCallback);
         }
     }).fail(() => {
         Utilities.GeneralError();
